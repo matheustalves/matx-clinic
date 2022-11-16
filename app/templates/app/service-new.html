@@ -1,0 +1,165 @@
+{% extends "app/base.html" %}
+{% block title %}
+    new service | matx clinic
+{% endblock title %}
+{% block body_block %}
+    <div class="container text-center p-4">
+        <div class="mb-3 fw-bold">
+            <a href="{% url 'index' %}">🏠 Home</a>
+        </div>
+        <h1>Schedule Service</h1>
+        <div class="container p-4 w-75">
+            <form class="my-3" action="{% url 'service_new' %}" method="get">
+                <input class="form-control mb-2" type="search" name="s" placeholder="Search Customer" aria-label="Search" maxlength="50" {% if query != '' %} value={{ query }}{% endif %} />
+                <button type="submit" class="btn btn-outline-success mx-2">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+            <form id="formCadastro" action="{% url 'services' %}" method="post">
+                {% if query != '' %}
+                    {% if not customers %}
+                        <div class="alert alert-danger" role="alert">No customers with this name.</div>
+                    {% else %}
+                        <div class="form-group mb-3">
+                            <table class="table table-hover shadow" id="tablePacientes">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">
+                                            <i class="fas fa-user"></i> Name
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-phone"></i> Phone
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-id-card"></i> CPF
+                                        </th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listaPacientes">
+                                    {% for customer in customers %}
+                                        <tr>
+                                            <td>{{ customer.name }}</td>
+                                            <td>{{ customer.phone }}</td>
+                                            <td>{{ customer.cpf }}</td>
+                                            <td>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input"
+                                                           type="radio"
+                                                           name="customer"
+                                                           id="check{{ customer.id }}"
+                                                           value="{{ customer.id }}"
+                                                           required/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-group my-4">
+                            <label class="form-label" for="inputServico">
+                                <i class="fas fa-briefcase"></i> Service Type
+                            </label>
+                            <input type="text"
+                                   name="tipo"
+                                   id="inputServico"
+                                   class="form-control"
+                                   value="Clareamento"
+                                   maxlength="50"
+                                   required/>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group mb-4">
+                                    <label class="form-label" for="inputData">
+                                        <i class="fas fa-calendar-alt"></i> Service Date
+                                    </label>
+                                    <input type="date"
+                                           name="data"
+                                           id="inputData"
+                                           class="form-control"
+                                           pattern="\d{4}-\d{2}-\d{2}"
+                                           required/>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group mb-4">
+                                    <label class="form-label" for="inputHorario">
+                                        <i class="fas fa-clock"></i> Service Time
+                                    </label>
+                                    <input type="text"
+                                           name="horario"
+                                           id="inputHorario"
+                                           class="form-control"
+                                           minlength="5"
+                                           maxlength="5"
+                                           value="09:00"
+                                           required/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <p>
+                                <i class="fas fa-check"></i> Service Status
+                            </p>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="status"
+                                       id="checkMarcada"
+                                       value="scheduled"
+                                       required/>
+                                <label class="form-check-label" for="checkMarcada">Scheduled</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="status"
+                                       id="checkConcluida"
+                                       value="concluded"
+                                       required/>
+                                <label class="form-check-label" for="checkConcluida">Concluded</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="status"
+                                       id="checkCancelada"
+                                       value="canceled"
+                                       required/>
+                                <label class="form-check-label" for="checkCancelada">Canceled</label>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="form-label" for="inputAtendente">
+                                <i class="fas fa-assistive-listening-systems"></i> Attendant
+                            </label>
+                            <input type="text"
+                                   name="atendente"
+                                   id="inputAtendente"
+                                   class="form-control"
+                                   maxlength="26"
+                                   required/>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="form-label" for="inputAdicional">
+                                <i class="fas fa-plus-circle"></i> More Info (optional)
+                            </label>
+                            <textarea class="form-control"
+                                      name="info"
+                                      id="inputAdicional"
+                                      maxlength="200"
+                                      rows="4"></textarea>
+                        </div>
+                        <button type="submit"
+                                class="btn btn-success btn-block mb-4"
+                                id="cadastrarBtn">
+                            <i class="fas fa-calendar-plus"></i> Schedule
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </form>
+        </div>
+    </div>
+{% endblock body_block %}

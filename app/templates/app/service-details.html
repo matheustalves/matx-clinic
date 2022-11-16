@@ -1,0 +1,161 @@
+{% extends "app/base.html" %}
+{% block title %}
+    service details | matx clinic
+{% endblock title %}
+{% block body_block %}
+    <div class="container text-center p-4">
+        <div class="mb-3 vh-25 font-weight-bold">
+            <a href="{% url 'index' %}">🏠 Home</a>
+        </div>
+        <h1>Service</h1>
+        {% if service %}
+            <div class="container p-4 w-75">
+                <table class="table table-hover shadow" id="tablePacientes">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">
+                                <i class="fas fa-user"></i> Name
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-phone"></i> Phone
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-id-card"></i> CPF
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaPacientes">
+                        <tr>
+                            <td>{{ service.customer.name }}</td>
+                            <td>{{ service.customer.phone }}</td>
+                            <td>{{ service.customer.cpf }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <form id="formCadastro"
+                      action="{% url 'services' service.id %}?_method=DELETE"
+                      method="post">
+                    <div class="form-group my-4">
+                        <label class="form-label" for="inputServico">
+                            <i class="fas fa-briefcase"></i>
+                            Service Type
+                        </label>
+                        <input type="text"
+                               name="type"
+                               id="inputServico"
+                               class="form-control"
+                               required
+                               maxlength="50"
+                               readonly
+                               value="{{ service.type }}"/>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group mb-4">
+                                <label class="form-label" for="inputData">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Service Date
+                                </label>
+                                <input type="date"
+                                       name="data"
+                                       id="inputData"
+                                       class="form-control"
+                                       required
+                                       readonly
+                                       pattern="\d{4}-\d{2}-\d{2}"
+                                       value="{{ service.date.date }}"/>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group mb-4">
+                                <label class="form-label" for="inputHorario">
+                                    <i class="fas fa-clock"></i>
+                                    Service Time
+                                </label>
+                                <input type="text"
+                                       name="horario"
+                                       id="inputHorario"
+                                       class="form-control"
+                                       maxlength="10"
+                                       required
+                                       readonly
+                                       value="{{ service.date.time }}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <p>
+                            <i class="fas fa-check"></i> Service Status
+                        </p>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="status"
+                                   id="checkMarcada"
+                                   value="scheduled"
+                                   required
+                                   disabled="disabled"
+                                   {% if service.status == "scheduled" %} checked{% endif %}/>
+                            <label class="form-check-label" for="checkMarcada">Scheduled</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="status"
+                                   id="checkConcluida"
+                                   value="concluded"
+                                   required
+                                   disabled="disabled"
+                                   {% if service.status == "concluded" %} checked{% endif %}/>
+                            <label class="form-check-label" for="checkConcluida">Concluded</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="status"
+                                   id="checkCancelada"
+                                   value="canceled"
+                                   required
+                                   disabled="disabled"
+                                   {% if service.status == "canceled" %} checked{% endif %}/>
+                            <label class="form-check-label" for="checkCancelada">Canceled</label>
+                        </div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label" for="inputAtendente">
+                            <i class="fas fa-assistive-listening-systems"></i>
+                            Attendant
+                        </label>
+                        <input type="text"
+                               name="atendente"
+                               id="inputAtendente"
+                               class="form-control"
+                               required
+                               maxlength="26"
+                               readonly
+                               value="{{ service.scheduled_by }}"/>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label" for="inputAdicional">
+                            <i class="fas fa-plus-circle"></i>
+                            More Info
+                        </label>
+                        <textarea class="form-control" name="info" id="inputAdicional" rows="4" maxlength="200" readonly>{{ service.info }}
+                </textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a type="button"
+                               class="btn btn-warning"
+                               href="{% url 'services_edit' service.id %}/edit"
+                               id="editarBtn">Edit</a>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-danger" id="deletarBtn">Delete</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock body_block %}
