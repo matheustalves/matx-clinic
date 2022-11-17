@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Customer, Service
 from datetime import datetime
+from .helpers import create_service
 
 
 def index(request):
@@ -23,6 +24,28 @@ def customer_details(request):
 
 
 def services(request):
+    if request.method == 'GET':
+        search = ''
+
+        if 's' in request.GET:
+            search = request.GET['s']
+            dt = datetime.strptime(search, '%Y-%m-%d')
+            services = Service.objects.filter(
+                date__date=dt).order_by('-date')[:10]
+        else:
+            services = Service.objects.order_by('-date')[:10]
+
+        return render(request, 'app/services.html', {'services': services, 'search': search})
+
+    elif request.method == 'POST':
+        return create_service(request)
+
+    elif request.method == 'PATCH':
+        return create_service(request)
+
+    elif request.method == 'DELETE':
+        return create_service(request)
+
     return 'foo'
 
 
@@ -33,11 +56,11 @@ def service_details(request, service_id):
 
 
 def service_new(request):
-    customers, query = [], ''
+    customers, search = [], ''
 
     if 's' in request.GET:
-        query = request.GET['s']
+        search = request.GET['s']
         customers = Customer.objects.filter(
-            name__contains=query).order_by('-created_at')
+            name__contains=search).order_by('-created_at')
 
-    return render(request, 'app/service-new.html', {'customers': customers, 'query': query})
+    return render(request, 'app/service-new.html', {'customers': customers, 'search': search})

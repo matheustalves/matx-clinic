@@ -10,18 +10,19 @@
         <h1>Schedule Service</h1>
         <div class="container p-4 w-75">
             <form class="my-3" action="{% url 'service_new' %}" method="get">
-                <input class="form-control mb-2" type="search" name="s" placeholder="Search Customer" aria-label="Search" maxlength="50" {% if query != '' %} value={{ query }}{% endif %} />
+                <input class="form-control mb-2" type="search" name="s" placeholder="Search Customer" aria-label="Search" maxlength="50" {% if search != '' %} value={{ search }}{% endif %} />
                 <button type="submit" class="btn btn-outline-success mx-2">
                     <i class="fas fa-search"></i> Search
                 </button>
             </form>
-            <form id="formCadastro" action="{% url 'services' %}" method="post">
-                {% if query != '' %}
+            <form action="{% url 'services' %}" method="post">
+                {% csrf_token %}
+                {% if search != '' %}
                     {% if not customers %}
                         <div class="alert alert-danger" role="alert">No customers with this name.</div>
                     {% else %}
                         <div class="form-group mb-3">
-                            <table class="table table-hover shadow" id="tablePacientes">
+                            <table class="table table-hover shadow">
                                 <thead class="thead-light">
                                     <tr>
                                         <th scope="col">
@@ -36,7 +37,7 @@
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
-                                <tbody id="listaPacientes">
+                                <tbody>
                                     {% for customer in customers %}
                                         <tr>
                                             <td>{{ customer.name }}</td>
@@ -47,7 +48,6 @@
                                                     <input class="form-check-input"
                                                            type="radio"
                                                            name="customer"
-                                                           id="check{{ customer.id }}"
                                                            value="{{ customer.id }}"
                                                            required/>
                                                 </div>
@@ -58,26 +58,26 @@
                             </table>
                         </div>
                         <div class="form-group my-4">
-                            <label class="form-label" for="inputServico">
+                            <label class="form-label" for="type-input">
                                 <i class="fas fa-briefcase"></i> Service Type
                             </label>
                             <input type="text"
-                                   name="tipo"
-                                   id="inputServico"
+                                   name="type"
+                                   id="type-input"
                                    class="form-control"
-                                   value="Clareamento"
+                                   value="Cleaning"
                                    maxlength="50"
                                    required/>
                         </div>
                         <div class="row">
                             <div class="col">
                                 <div class="form-group mb-4">
-                                    <label class="form-label" for="inputData">
+                                    <label class="form-label" for="date-input">
                                         <i class="fas fa-calendar-alt"></i> Service Date
                                     </label>
                                     <input type="date"
-                                           name="data"
-                                           id="inputData"
+                                           name="date"
+                                           id="date-input"
                                            class="form-control"
                                            pattern="\d{4}-\d{2}-\d{2}"
                                            required/>
@@ -85,12 +85,12 @@
                             </div>
                             <div class="col">
                                 <div class="form-group mb-4">
-                                    <label class="form-label" for="inputHorario">
+                                    <label class="form-label" for="time-input">
                                         <i class="fas fa-clock"></i> Service Time
                                     </label>
                                     <input type="text"
-                                           name="horario"
-                                           id="inputHorario"
+                                           name="time"
+                                           id="time-input"
                                            class="form-control"
                                            minlength="5"
                                            maxlength="5"
@@ -107,54 +107,52 @@
                                 <input class="form-check-input"
                                        type="radio"
                                        name="status"
-                                       id="checkMarcada"
+                                       id="check-scheduled"
                                        value="scheduled"
                                        required/>
-                                <label class="form-check-label" for="checkMarcada">Scheduled</label>
+                                <label class="form-check-label" for="check-scheduled">Scheduled</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input"
                                        type="radio"
                                        name="status"
-                                       id="checkConcluida"
+                                       id="check-concluded"
                                        value="concluded"
                                        required/>
-                                <label class="form-check-label" for="checkConcluida">Concluded</label>
+                                <label class="form-check-label" for="check-concluded">Concluded</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input"
                                        type="radio"
                                        name="status"
-                                       id="checkCancelada"
+                                       id="check-canceled"
                                        value="canceled"
                                        required/>
-                                <label class="form-check-label" for="checkCancelada">Canceled</label>
+                                <label class="form-check-label" for="check-canceled">Canceled</label>
                             </div>
                         </div>
                         <div class="form-group mb-4">
-                            <label class="form-label" for="inputAtendente">
+                            <label class="form-label" for="attendant-input">
                                 <i class="fas fa-assistive-listening-systems"></i> Attendant
                             </label>
                             <input type="text"
-                                   name="atendente"
-                                   id="inputAtendente"
+                                   name="scheduled_by"
+                                   id="attendant-input"
                                    class="form-control"
-                                   maxlength="26"
+                                   maxlength="50"
                                    required/>
                         </div>
                         <div class="form-group mb-4">
-                            <label class="form-label" for="inputAdicional">
+                            <label class="form-label" for="info-input">
                                 <i class="fas fa-plus-circle"></i> More Info (optional)
                             </label>
                             <textarea class="form-control"
                                       name="info"
-                                      id="inputAdicional"
+                                      id="info-input"
                                       maxlength="200"
                                       rows="4"></textarea>
                         </div>
-                        <button type="submit"
-                                class="btn btn-success btn-block mb-4"
-                                id="cadastrarBtn">
+                        <button type="submit" class="btn btn-success btn-block mb-4">
                             <i class="fas fa-calendar-plus"></i> Schedule
                         </button>
                     {% endif %}

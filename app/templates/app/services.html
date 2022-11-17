@@ -1,0 +1,65 @@
+{% extends "app/base.html" %}
+{% block title %}
+    services | matx clinic
+{% endblock title %}
+{% block body_block %}
+    <div class="container text-center p-4">
+        <div class="mb-3 vh-25 font-weight-bold">
+            <a href="{% url 'index' %}">🏠 Home</a>
+        </div>
+        <h1>Services</h1>
+        <div class="container my-4 w-75">
+            <form action="{% url 'services' %}" method="get">
+                <label for="search-input">
+                    <i class="fas fa-calendar-alt"></i> Day
+                </label>
+                <input class="form-control mb-2" type="date" aria-label="Search" id="search-input" name="s" required {% if search != '' %} value={{ search }}{% endif %} />
+                <button type="submit" class="btn btn-outline-success mx-2">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                <a type="button"
+                   class="btn btn-outline-primary mx-2"
+                   href="{% url 'services' %}">
+                    <i class="fas fa-briefcase"></i> List All
+                </a>
+            </form>
+        </div>
+        <table class="table table-hover shadow">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">
+                        <i class="fas fa-calendar-alt"></i> Date
+                    </th>
+                    <th scope="col">
+                        <i class="fas fa-clock"></i> Time
+                    </th>
+                    <th scope="col">
+                        <i class="fas fa-user"></i> Customer
+                    </th>
+                    <th scope="col">
+                        <i class="fas fa-briefcase"></i> Service
+                    </th>
+                    <th scope="col">
+                        <i class="fas fa-info-circle"></i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                    <tr>
+                        <td>{{ service.date.date }}</td>
+                        <td>{{ service.date.time }}</td>
+                        <td>
+                            <a href="{% url 'customer_details' service.customer.id %}">{{ service.customer.name }}</a>
+                        </td>
+                        <td>{{ service.type }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm"
+                               href="{% url 'service_details' service.id %}">+</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock body_block %}

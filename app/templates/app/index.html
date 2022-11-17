@@ -7,7 +7,7 @@
         <div class="container-fluid p-5" id="mainHeader">
             <h1 class="mb-4 user-select-none" id="mainTitle">matx clinic</h1>
         </div>
-        <div class="container" id="containerBtns">
+        <div class="container">
             <div class="row my-5">
                 <div class="col">
                     <a href="{% url 'service_new' %}" class="btn btn-success btn-block mx-2">
@@ -48,6 +48,9 @@
                                 <i class="fa-solid fa-calendar-alt"></i> Date
                             </th>
                             <th scope="col">
+                                <i class="fas fa-clock"></i> Time
+                            </th>
+                            <th scope="col">
                                 <i class="fa-solid fa-user"></i> Customer
                             </th>
                             <th scope="col">
@@ -58,10 +61,11 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody id="listaConsultas">
+                    <tbody>
                         {% for service in services %}
                             <tr>
-                                <td>{{ service.date }}</td>
+                                <td>{{ service.date.date }}</td>
+                                <td>{{ service.date.time }}</td>
                                 <td>
                                     <a href="{% url 'customer_details' service.customer.id %}">{{ service.customer.name }}</a>
                                 </td>

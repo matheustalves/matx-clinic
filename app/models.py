@@ -19,6 +19,10 @@ class Service(models.Model):
     date = models.DateTimeField()
     type = models.CharField(max_length=50)
     scheduled_by = models.CharField(max_length=50)
-    status = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, choices=[
+        ('scheduled', 'Scheduled'),
+        ('concluded', 'Concluded'),
+        ('canceled', 'Canceled'),
+    ])
     info = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
